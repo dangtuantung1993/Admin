@@ -71,16 +71,21 @@ export default {
       if(!result) {
         return
       }
-       axios.post(`http://165.22.52.211:1337:1337/parse/users`, {
-            body: {
-                "username": 'pxson.001',
-                "password": '123456'
-            },
-            headers: {
+        const instance = axios.create({
+        baseURL: 'http://165.22.52.211:1337/',
+        timeout: 1000,
+        headers: {
                 "X-Parse-REST-API-Key": "01c896577245da140fcf9f0fd247c16f",
                 "X-Parse-Application-Id": "SONTUNGDEV",
                 "Content-type": "application/json",
-            },            
+        }
+        });
+
+       instance.post(`parse/users`, {
+            
+                "username": '${username}',
+                "password": '${password}'
+                       
         }).then(response =>{
             console.log(response)
         }).catch(e => {

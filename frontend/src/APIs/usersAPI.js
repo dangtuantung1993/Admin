@@ -10,7 +10,7 @@ console.log(API_LOGIN_USER)
 //     try {
 //         let response = await fetch(API_REGISTER_USER, {
 //             method: 'POST',
-//             body: `name=${name}&email=${email}&password=${password}`,
+            // body: `name=${name}&email=${email}&password=${password}`,
 //             headers: {
 //                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
 //             },            
