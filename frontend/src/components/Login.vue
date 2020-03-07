@@ -44,61 +44,41 @@
 </template>
 
 <script>
-import axios from 'axios'
-// import {loginUser} from '@/APIs/usersAPI.js'
+import {loginUser} from '@/APIs/usersAPI.js'
 export default {
   name: 'Login',
   components: {
    
   },
-  //props = "Thuộc tính public"
   props: {
     
   },
   data() {
-    return {
-      //Các thuộc tính "private" => Giống "state" trong React !       
-      username:'',
-      password:''
+    return {    
+      username:"",
+      password:""
     }
   },
-  
-  //Các phương thức "private"
+  beforeCreate(){
+    if(this.$session.get('loggedInUser')){
+      this.$router.push('/')
+    }
+  },
   methods: {
     async login() {
-      //Giờ chúng ta cần "validate" các thông tin đăng nhập
       let result = await this.$validator.validateAll()
       if(!result) {
         return
       }
-        const instance = axios.create({
-        baseURL: 'http://165.22.52.211:1337/',
-        timeout: 1000,
-        headers: {
-                "X-Parse-REST-API-Key": "01c896577245da140fcf9f0fd247c16f",
-                "X-Parse-Application-Id": "SONTUNGDEV",
-                "Content-type": "application/json",
-        }
-        });
-
-       instance.post(`parse/users`, {
-            
-                "username": '${username}',
-                "password": '${password}'
-                       
-        }).then(response =>{
-            console.log(response)
-        }).catch(e => {
-            console.log(e)
-        })
-       
-    //   if(Object.keys(loggedInUser).length > 0) {
-    //     this.$session.start() //Lưu session
-    //     this.$session.set('loggedInUser', loggedInUser)
-    //     this.$router.push('/') //Home
-    //   } else {
-    //     alert('Đăng nhập ko thành công, kiểm tra lại email/password')
-    //   }
+      let loggedInUser = await loginUser(this.username, this.password) 
+      console.log('loggedInUser', loggedInUser) 
+      if(Object.keys(loggedInUser).length > 0) {
+        this.$session.start()
+        this.$session.set('loggedInUser', loggedInUser)
+        this.$router.push('/') 
+      } else {
+        alert('Đăng nhập ko thành công, kiểm tra lại email/password')
+      }
     },
     async register(){
        this.$router.push('/register')

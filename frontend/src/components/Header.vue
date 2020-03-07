@@ -35,19 +35,16 @@ export default {
     data() {
       return {
         userName:'',
-        profileUrl:'',
         isLoggedIn: false
       }
     },
     created() {
       if (this.$session.exists()) {
         let userObject = this.$session.get('loggedInUser')
-        this.userName = userObject.name ? userObject.name : ''
-        this.profileUrl = userObject.profileUrl ? userObject.profileUrl : ''
+        this.userName = userObject.data.username ? userObject.data.username : ''
         this.isLoggedIn = userObject ? true : false
       } else {
         this.userName = ""
-        this.profileUrl = ""
         this.isLoggedIn = false
       }
     },

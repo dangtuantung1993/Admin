@@ -1,56 +1,58 @@
 import { 
     SERVER_NAME, 
     SERVER_PORT,
+    APIResponse 
 } from './apiParameters'
 import axios from 'axios'
-// const API_REGISTER_USER = `${SERVER_NAME}:${SERVER_PORT}/users/registerUser`
-const API_LOGIN_USER = `${SERVER_NAME}:${SERVER_PORT}/parse/users`
-console.log(API_LOGIN_USER)
-// export const registerUser = async (name, email, password) => {
-//     try {
-//         let response = await fetch(API_REGISTER_USER, {
-//             method: 'POST',
-            // body: `name=${name}&email=${email}&password=${password}`,
-//             headers: {
-//                 "Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
-//             },            
-//         })
-//         let responseJson = await response.json()
-//         if(responseJson.result === "ok") {
-//             return new APIResponse(
-//                 responseJson.data, 
-//                 responseJson.message,true)
-//         } else {
-//             return new APIResponse(
-//                 null, 
-//                 responseJson.message,false)
-//         }
-//     } catch (error) {
-//         return new APIResponse(null, error.message, false) //false
-//     }
-// }
-export const loginUser = async () => {
+const instance = axios.create({
+    baseURL: `${SERVER_NAME}:${SERVER_PORT}/`,
+    timeout: 1000,
+    headers: {
+            "X-Parse-REST-API-Key": "01c896577245da140fcf9f0fd247c16f",
+            "X-Parse-Application-Id": "SONTUNGDEV",
+            "Content-type": "application/json",
+    }
+    });
+
+export const registerUser = async (username, password) => {
     try {
-        let response = await axios(API_LOGIN_USER, {
-            method: 'POST',
-            body: {
-                "username": 'pxson.001',
-                "password": '123456'
-            },
-            headers: {
-                "X-Parse-REST-API-Key": "01c896577245da140fcf9f0fd247c16f",
-                "X-Parse-Application-Id": "SONTUNGDEV",
-                "Content-type": "application/json",
-            },            
+        let response = await instance.post(`parse/users`, {
+            "username": `${username}`,
+            "password": `${password}`
+        }).then(res=>{
+            return res
+        }).catch(e => {
+            console.log(e)
         })
-        console.log(response)
-        let responseJson = await response.json()
-        if(responseJson.result === "ok") {
-            return responseJson.data
+        if(response.statusText === "Created") {
+            return new APIResponse(
+                response.data, true)
         } else {
-            return {}
+            return new APIResponse(
+                null, false)
         }
     } catch (error) {
-        return {}
+        return new APIResponse(null, false)
+    }
+}
+export const loginUser = async (username, password) => {
+    try {
+        let response = await instance.post(`parse/login`, {
+            "username": `${username}`,
+            "password": `${password}`
+        }).then(res=>{
+            return res
+        }).catch(e => {
+            console.log(e)
+        })
+        if(response.statusText === "OK") {
+            return new APIResponse(
+                response.data, true)
+        } else {
+            return new APIResponse(
+                null, false)
+        }
+    } catch (error) {
+        return new APIResponse(null, false)
     }
 }
